@@ -1,0 +1,66 @@
+Tema 3 --- Client Web. Comunicatie cu REST API
+    Dobrila Madalin 324CA
+
+    Functionalitatea aplicatiei consta in folosirea operatiilor pe siruri de
+caractere si stringuri (formatarea mesajelor), lucrul cu socketi si conexiuni
+intre server si clienti.
+    Nucleul aplicatiei este reprezentat de o bucla while in care se citesc
+comenzi de la tastatura si se executa (interactiune client-server). Comenzile
+sunt citite cu fgets (se citeste toata linia deodata) apoi ultimul caracter
+('\n'-ul) este sters (inlocuit cu caracterul null). Pentru a folosi switch-case
+in executia comenzilor (mai elegant) am folosit unordered_map din stl pentru
+maparea intre string (numele comenzii) si un intreg (ales random la inceput).
+Conexiunea o deschid de fiecare data la inceputul while ului.
+    Pentru parsarea mesajelor (extragerea cookie urilor de login si tokenurilor
+de acces) am folosit bibilioteca nlohmann pentru care atasez un tutorial de
+instalare:
+    - git clone https://github.com/nlohmann/json.git
+    - cd json/
+    - mkdir build
+    - cd build/
+    - cmake ..
+    - make
+    - sudo make install
+    Am folosit constructorul json {{<cheie_1>, <valoare_1>}, ..., {cheie_n,
+valoare_n}} pentru a forma un json din string uri (de exemplu, la username
+si parola sau la datele despre carte). Alte functii folosite: json::dump
+(transforma din json in string ul cerut), json::parse (operatia inversa),
+operatorul [] pentru a extrage valoarea pentru o anumita cheie (similar cu
+functionalitatea unui map, practic json ul simuleaza un map din stl).
+
+register:
+    - trimit mesajul cu json ul format din username si parola (POST);
+
+login:
+    - trimit mesajul cu json ul format din ursername si parola, extrag cookie
+    ul de login din raspuns cu strstr si il salvez (POST);
+
+logout:
+    - trimit un mesaj cu cookie ul de login (GET);
+
+enter_library:
+    - trimit un mesaj cu cookie ul de login, extrag tokenul de acces din raspuns
+    si il salvez in json ul de acces (GET);
+
+add_book:
+    - trimit un mesaj cu json ul format din datele cartii (titlu, autor, gen, nr
+    pagini, editor) si cu tokenul de acces (POST);
+
+get_books:
+    - trimit un mesaj cu token ul de acces (GET);
+
+get_book:
+    - trimit un mesaj cu token ul de acces pe api ul specific id ului pe care il
+    citesc de la tastatura (GET);
+
+delete_book:
+    - trimit un mesaj cu token ul de acces pe api ul specific id ului pe care il
+    citesc de la tastatura (DELETE);
+
+exit:
+    - se iese din program;
+
+    Mesajele care necesita token ul de acces au un compute special in care in locul
+stringului "Cookie: " adaug "Authorization: Bearer ". Contorizez local daca
+clientul este logat sau nelogat (variabila cookie), daca are acces sau nu in
+biblioteca (variabila acces).
